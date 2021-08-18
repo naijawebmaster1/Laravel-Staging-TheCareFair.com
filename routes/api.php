@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\GiverController;
+use App\Http\Controllers\AdminController;
 
 
 /*
@@ -25,5 +26,11 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 Route::group(['prefix' => 'v1/giver'], function ($router) {
     Route::put('/account/update-profile/{giver}', [GiverController::class, 'update'])->name('update');
     Route::put('/account/upload-document', [GiverController::class, 'upload'])->name('upload');
+
+});
+
+Route::group(['prefix' => 'v1/admin'], function ($router) {
+    Route::post('/auth/login', [AdminController::class, 'login'])->name('admin.login');
+    // Route::put('/auth/upload-document', [GiverController::class, 'upload'])->name('upload');
 
 });
