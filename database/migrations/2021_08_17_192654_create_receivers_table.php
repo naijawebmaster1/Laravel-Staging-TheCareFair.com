@@ -24,6 +24,9 @@ class CreateReceiversTable extends Migration
             $table->string('zip_code');
             $table->string('profile_photo_url')->nullable();
             $table->timestamp('date_joined');
+            $table->string('password');
+
+            $table->timestamps();
         });
     }
 
