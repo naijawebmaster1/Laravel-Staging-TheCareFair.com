@@ -33,6 +33,24 @@ class ReceiverController extends Controller
         return response()->json(['token' => $this->createNewToken($token)]);
     }
 
+    public function register(Request $request){
+        $fields = $request->validate([
+            'name' =>'required|string',
+            'email' =>'required|string|unique:receivers,email',
+            'password' =>'required|string|confirmed',
+
+        ]);
+
+        $receiver = Receiver::create([
+            'name' =>$request->name,
+            'email' => $request->email,
+            'password' => bcrypt($request->password)
+        ]);
+
+
+        return response()->json(['data' => $receiver], 201);
+    }
+
     /**
      * Display a listing of the resource.
      *
