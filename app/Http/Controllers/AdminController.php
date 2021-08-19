@@ -64,6 +64,17 @@ class AdminController extends Controller
         ], 201);
     }
 
+    public function update(Request $request, Admin $admin)
+    {
+        $admin->name = $request->name;
+        $admin->email = $request->email;
+        $admin->profile_photo_url = $request->profile_photo_url;
+        
+        $admin->save();
+
+        return response()->json(['success'=>true], 204);
+    }
+
 
     /**
      * Log the user out (Invalidate the token).
@@ -91,7 +102,7 @@ class AdminController extends Controller
      * @return \Illuminate\Http\JsonResponse
      */
     public function userProfile() {
-        return response()->json(auth()->user());
+        return response()->json([auth()->user()], 200);
     }
 
     /**

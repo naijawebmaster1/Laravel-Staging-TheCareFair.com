@@ -23,6 +23,10 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 
+Route::get('/unauthorized', function (Request $request) {
+    return response()->json(['error' => 'Unauthorized'], 401);
+})->name('unauthorized');
+
 
 
 Route::group(['prefix' => 'v1/giver'], function ($router) {
@@ -35,7 +39,8 @@ Route::group(['prefix' => 'v1/giver'], function ($router) {
 
 Route::group(['prefix' => 'v1/admin'], function ($router) {
     Route::post('/auth/login', [AdminController::class, 'login'])->name('admin.login');
-    // Route::put('/auth/upload-document', [GiverController::class, 'upload'])->name('upload');
+    Route::post('/account/update-profile', [AdminController::class, 'update'])->name('admin.update');
+    Route::get('/account/profile', [AdminController::class, 'userProfile'])->name('admin.update');
 
 });
 
