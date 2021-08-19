@@ -26,6 +26,8 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 
 
 Route::group(['prefix' => 'v1/giver'], function ($router) {
+    Route::post('/auth/login', [GiverController::class, 'login'])->name('giver.login');
+    Route::post('/auth/register', [GiverController::class, 'register'])->name('giver.register');
     Route::put('/account/update-profile/{giver}', [GiverController::class, 'update'])->name('update');
     Route::put('/account/upload-document', [GiverController::class, 'upload'])->name('upload');
 
@@ -45,5 +47,13 @@ Route::group(['prefix' => 'v1/receiver'], function ($router) {
     Route::post('/jobs/{job}/update', [JobController::class, 'update'])->name('update.job');
     Route::delete('/jobs/{job}/delete', [JobController::class, 'destroy'])->name('delete.job');
     Route::put('/jobs/{job}/update-status', [JobController::class, 'updateStatus'])->name('update-status');
+
+});
+
+Route::group(['prefix' => 'v1/agency'], function ($router) {
+    Route::post('/auth/login', [GiverController::class, 'login'])->name('agency.login');
+    Route::post('/auth/register', [GiverController::class, 'register'])->name('agency.register');
+    Route::put('/account/update-profile/{agency}', [GiverController::class, 'update'])->name('update');
+    Route::put('/account/upload-document', [GiverController::class, 'upload'])->name('upload');
 
 });

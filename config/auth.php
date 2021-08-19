@@ -50,6 +50,10 @@ return [
             'driver' => 'jwt',
             'provider' => 'receiver',
         ],
+        'agency' => [
+            'driver' => 'jwt',
+            'provider' => 'agency',
+        ],
     ],
 
     /*
@@ -77,6 +81,10 @@ return [
         'receiver' => [
             'driver' => 'eloquent',
             'model' => App\Models\Receiver::class,
+        ],
+        'agency' => [
+            'driver' => 'eloquent',
+            'model' => App\Models\Agency::class,
         ],
 
         // 'users' => [
