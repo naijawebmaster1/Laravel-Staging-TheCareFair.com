@@ -46,6 +46,10 @@ return [
             'provider' => 'admins',
             'hash' => false,
         ],
+         'receiver' => [
+            'driver' => 'jwt',
+            'provider' => 'receiver',
+        ],
     ],
 
     /*
@@ -69,6 +73,10 @@ return [
         'admins' => [
             'driver' => 'eloquent',
             'model' => App\Models\Admin::class,
+        ],
+        'receiver' => [
+            'driver' => 'eloquent',
+            'model' => App\Models\Receiver::class,
         ],
 
         // 'users' => [
