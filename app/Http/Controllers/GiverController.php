@@ -13,6 +13,10 @@ use Illuminate\Http\Request;
 class GiverController extends Controller
 {
 
+    public function __construct() {
+        $this->middleware('auth:api', ['except' => ['login', 'register']]);
+    }
+
 
     // Register
     public function register(Request $request){
@@ -128,5 +132,14 @@ class GiverController extends Controller
     public function destroy(Giver $giver)
     {
         //
+    }
+
+    protected function createNewToken($token){
+        return response()->json([
+            'access_token' => $token,
+            'token_type' => 'bearer',
+            'expires_in' => auth()->factory()->getTTL() * 60,
+            'user' => auth()->user()
+        ]);
     }
 }
