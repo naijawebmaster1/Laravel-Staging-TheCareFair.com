@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Auth;
 class JobController extends Controller
 {
     public function __construct() {
-        // $this->middleware('auth:api', ['except' => ['login', 'register']]);
+        $this->middleware('auth:receiver');
     }
 
     /**
@@ -20,7 +20,8 @@ class JobController extends Controller
      */
     public function index()
     {
-        //
+        $jobs = Job::paginate(10);
+        return response()->json(['data' => $jobs, 'success'=>true], 200);
     }
 
     /**
@@ -52,6 +53,7 @@ class JobController extends Controller
                 'languages' => $request->languages,
                 'minimum_years_of_experience' => $request->minimum_years_of_experience,
                 'status' => $request->status,
+                'description' => $request->description,
                 'receiver_id' => Auth::user()->id,
             ]);
 
@@ -73,26 +75,11 @@ class JobController extends Controller
         //
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\Job  $job
-     * @return \Illuminate\Http\Response
-     */
-    public function show(Job $job)
-    {
-        //
-    }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\Job  $job
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Job $job)
+    public function updateStatus(Job $job)
     {
-        //
+        $job->status = false;
+        return response()->json(['success'=>true], 204);
     }
 
     /**
@@ -104,7 +91,19 @@ class JobController extends Controller
      */
     public function update(Request $request, Job $job)
     {
-        //
+        $job->title = $request->title;
+        $job->location = $request->location;
+        $job->distance = $request->distance;
+        $job->minimum_rate = $request->minimum_rate;
+        $job->maximum_rate = $request->maximum_rate;
+        $job->languages = $request->languages;
+        $job->minimum_years_of_experience = $request->minimum_years_of_experience;
+        $job->status = $request->status;
+        $job->description = $request->description;
+        
+        $job->save();
+
+        return response()->json(['success'=>true], 204);
     }
 
     /**
@@ -115,6 +114,8 @@ class JobController extends Controller
      */
     public function destroy(Job $job)
     {
-        //
+        // $job = Job::findOrFail($id)->delete();
+        $job->delete();
+        return response()->json(['status'=>true], 204);
     }
 }

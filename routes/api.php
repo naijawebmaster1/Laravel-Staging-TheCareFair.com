@@ -39,7 +39,11 @@ Route::group(['prefix' => 'v1/admin'], function ($router) {
 
 Route::group(['prefix' => 'v1/receiver'], function ($router) {
     Route::post('/auth/login', [ReceiverController::class, 'login'])->name('receiver.login');
-    // Route::put('/auth/upload-document', [GiverController::class, 'upload'])->name('upload');
-    Route::post('/jobs/create', [JobController::class, 'create'])->name('create_job');
+    Route::post('/jobs/create', [JobController::class, 'create'])->name('create.job');
+    Route::get('/jobs/{job}/show', [JobController::class, 'show'])->name('show.job');
+    Route::get('/jobs/list', [JobController::class, 'index'])->name('list.job');
+    Route::post('/jobs/{job}/update', [JobController::class, 'update'])->name('update.job');
+    Route::delete('/jobs/{job}/delete', [JobController::class, 'destroy'])->name('delete.job');
+    Route::put('/jobs/{job}/update-status', [JobController::class, 'updateStatus'])->name('update-status');
 
 });
