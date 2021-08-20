@@ -161,6 +161,19 @@ class GiverController extends Controller
         return response()->json(auth()->user());
     }
 
+    public function update(Request $request)
+    {
+        $giver = Auth::user();
+
+        $giver->name = $request->name;
+        $giver->email = $request->email;
+        $giver->profile_photo_url = $request->profile_photo_url;
+        
+        $giver->save();
+
+        return response()->json(['success'=>true], 204);
+    }
+
     /**
      * Log the user out (Invalidate the token).
      *

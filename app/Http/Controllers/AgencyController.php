@@ -94,6 +94,19 @@ class AgencyController extends Controller
         return response()->json(auth()->user());
     }
 
+    public function update(Request $request)
+    {
+        $agency = Auth::user();
+
+        $agency->name = $request->name;
+        $agency->email = $request->email;
+        $agency->profile_photo_url = $request->profile_photo_url;
+        
+        $agency->save();
+
+        return response()->json(['success'=>true], 204);
+    }
+
     /**
      * Log the user out (Invalidate the token).
      *

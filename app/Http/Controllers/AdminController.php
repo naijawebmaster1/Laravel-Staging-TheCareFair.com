@@ -64,8 +64,10 @@ class AdminController extends Controller
         ], 201);
     }
 
-    public function update(Request $request, Admin $admin)
+    public function update(Request $request)
     {
+        $admin = Auth::user();
+
         $admin->name = $request->name;
         $admin->email = $request->email;
         $admin->profile_photo_url = $request->profile_photo_url;

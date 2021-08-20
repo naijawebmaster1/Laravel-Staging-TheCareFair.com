@@ -32,15 +32,14 @@ Route::get('/unauthorized', function (Request $request) {
 Route::group(['prefix' => 'v1/giver'], function ($router) {
     Route::post('/auth/login', [GiverController::class, 'login'])->name('giver.login');
     Route::post('/auth/register', [GiverController::class, 'register'])->name('giver.register');
-    Route::put('/account/update-profile/{giver}', [GiverController::class, 'update'])->name('update');
-    Route::put('/account/upload-document', [GiverController::class, 'upload'])->name('upload');
+    Route::post('/account/update-profile/{giver}', [GiverController::class, 'update'])->name('update');
 
 });
 
 Route::group(['prefix' => 'v1/admin'], function ($router) {
     Route::post('/auth/login', [AdminController::class, 'login'])->name('admin.login');
     Route::post('/account/update-profile', [AdminController::class, 'update'])->name('admin.update');
-    Route::get('/account/profile', [AdminController::class, 'userProfile'])->name('admin.update');
+    Route::get('/account/profile', [AdminController::class, 'userProfile'])->name('admin.profile');
 
 });
 
@@ -56,9 +55,9 @@ Route::group(['prefix' => 'v1/receiver'], function ($router) {
 });
 
 Route::group(['prefix' => 'v1/agency'], function ($router) {
-    Route::post('/auth/login', [GiverController::class, 'login'])->name('agency.login');
-    Route::post('/auth/register', [GiverController::class, 'register'])->name('agency.register');
-    Route::put('/account/update-profile/{agency}', [GiverController::class, 'update'])->name('update');
-    Route::put('/account/upload-document', [GiverController::class, 'upload'])->name('upload');
+    Route::post('/auth/login', [AgencyController::class, 'login'])->name('agency.login');
+    Route::post('/auth/register', [AgencyController::class, 'register'])->name('agency.register');
+    Route::get('/account/profile', [AgencyController::class, 'userProfile'])->name('agency.profile');
+    Route::post('/account/update-profile/{agency}', [AgencyController::class, 'update'])->name('agency.update');
 
 });
