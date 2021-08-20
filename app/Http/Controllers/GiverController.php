@@ -4,9 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Giver;
 use Illuminate\Http\Request;
-
-
-
+use Validator;
+use Illuminate\Support\Facades\Auth;
 
 
 
@@ -14,9 +13,27 @@ class GiverController extends Controller
 {
 
     public function __construct() {
-        $this->middleware('auth:api', ['except' => ['login', 'register']]);
+        $this->middleware('auth:giver', ['except' => ['login', 'register']]);
     }
 
+    public function login(Request $request){
+        $validator = Validator::make($request->all(), [
+            'email' => 'required|email',
+            'password' => 'required|string',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json($validator->errors(), 422);
+        }
+
+        if (! $token = Auth::guard('giver')->attempt($validator->validated())) {
+            return response()->json(['error' => 'Unauthorized'], 401);
+        }
+
+        $user = Giver::where('email', $request->email)->get();
+
+        return response()->json(['token' => $this->createNewToken($token)]);
+    }
 
     // Register
     public function register(Request $request){
@@ -80,23 +97,6 @@ class GiverController extends Controller
     public function show(Giver $giver)
     {
         //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Giver  $giver
-     * @return \Illuminate\Http\Response
-     */
-    public function  update(Request $request, Giver $giver)
-    {
-        //
-        $giver->update($request->all());
-
-        return response()->json($giver, 200);
-
-
     }
 
 

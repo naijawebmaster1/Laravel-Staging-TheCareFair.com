@@ -54,6 +54,10 @@ return [
             'driver' => 'jwt',
             'provider' => 'agency',
         ],
+        'giver' => [
+            'driver' => 'jwt',
+            'provider' => 'giver',
+        ],
     ],
 
     /*
@@ -85,6 +89,10 @@ return [
         'agency' => [
             'driver' => 'eloquent',
             'model' => App\Models\Agency::class,
+        ],
+        'giver' => [
+            'driver' => 'eloquent',
+            'model' => App\Models\Giver::class,
         ],
 
         // 'users' => [
