@@ -4,12 +4,14 @@ namespace App\Http\Controllers;
 
 use App\Models\Agency;
 use Illuminate\Http\Request;
+use Validator;
+use Illuminate\Support\Facades\Auth;
 
 class AgencyController extends Controller
 {
 
     public function __construct() {
-        $this->middleware('auth:receiver', ['except' => ['login', 'register']]);
+        $this->middleware('auth:agency', ['except' => ['login', 'register']]);
     }
 
     /**
@@ -20,6 +22,48 @@ class AgencyController extends Controller
     public function index()
     {
         //
+    }
+
+    public function register(Request $request){
+        $validator = Validator::make($request->all(), [
+            'name' =>'required|string',
+            'email' =>'required|string|unique:receivers,email',
+            'password' =>'required|string',
+
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json($validator->errors(), 422);
+        }
+
+        $agency = Agency::create([
+            'name' =>$request->name,
+            'email' => $request->email,
+            'password' => bcrypt($request->password)
+        ]);
+
+
+        $credentials = $request->only(['email', 'password']);
+        $token = Auth::guard('agency')->attempt($credentials);
+
+        return response()->json(['token' => $this->createNewToken($token)], 201);
+    }
+
+    public function login(Request $request){
+        $validator = Validator::make($request->all(), [
+            'email' => 'required|email',
+            'password' => 'required|string',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json($validator->errors(), 422);
+        }
+
+        if (! $token = Auth::guard('agency')->attempt($validator->validated())) {
+            return response()->json(['error' => 'Unauthorized'], 401);
+        }
+
+        return response()->json(['token' => $this->createNewToken($token)]);
     }
 
     /**
@@ -45,18 +89,6 @@ class AgencyController extends Controller
     }
 
     /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Agency  $agency
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, Agency $agency)
-    {
-        //
-    }
-
-    /**
      * Remove the specified resource from storage.
      *
      * @param  \App\Models\Agency  $agency
@@ -72,7 +104,7 @@ class AgencyController extends Controller
             'access_token' => $token,
             'token_type' => 'bearer',
             'expires_in' => auth()->factory()->getTTL() * 60,
-            'user' => auth()->user()
+            'user' => Auth::guard('receiver')->user()
         ]);
     }
 
@@ -94,9 +126,16 @@ class AgencyController extends Controller
         return response()->json(auth()->user());
     }
 
+        /**
+     * Update the specified resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \App\Models\Agency  $agency
+     * @return \Illuminate\Http\Response
+     */
     public function update(Request $request)
     {
-        $agency = Auth::user();
+        $agency = Auth::guard('agency')->user();
 
         $agency->name = $request->name;
         $agency->email = $request->email;

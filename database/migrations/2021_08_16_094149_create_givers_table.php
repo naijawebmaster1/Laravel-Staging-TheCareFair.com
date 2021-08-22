@@ -20,12 +20,12 @@ class CreateGiversTable extends Migration
             $table->string('name');
             $table->string('email');
             $table->string('email_verified')->default('true');
-            $table->string('phone');
-            $table->date('birthdate');
+            $table->string('phone')->nullable();
+            $table->date('birthdate')->nullable();
             $table->string('caption')->nullable();
             $table->string('bio')->nullable();
             $table->string('address')->nullable();
-            $table->string('zip_code');
+            $table->string('zip_code')->nullable();
             $table->string('hourly_rate')->nullable();
             $table->string('years_of_experience')->nullable();
             $table->json('rating')->nullable();
@@ -47,8 +47,8 @@ class CreateGiversTable extends Migration
             $table->string('vehicle_verified')->default("false");
             $table->string('resume_document_url')->nullable();
             $table->string('resume_verified')->default("false");
-            $table->string('profile_photo_url');
-            $table->timestamp('date_joined');
+            $table->string('profile_photo_url')->nullable();
+            $table->timestamp('date_joined')->nullable();
             $table->string('password');
 
             $table->timestamps();

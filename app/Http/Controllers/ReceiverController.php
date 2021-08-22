@@ -11,7 +11,7 @@ class ReceiverController extends Controller
 {
 
     public function __construct() {
-        $this->middleware('auth:api', ['except' => ['login', 'register']]);
+        $this->middleware('auth:receiver', ['except' => ['login', 'register']]);
     }
 
     public function login(Request $request){
@@ -28,18 +28,20 @@ class ReceiverController extends Controller
             return response()->json(['error' => 'Unauthorized'], 401);
         }
 
-        $user = Receiver::where('email', $request->email)->get();
-
         return response()->json(['token' => $this->createNewToken($token)]);
     }
 
     public function register(Request $request){
-        $fields = $request->validate([
+        $validator = Validator::make($request->all(), [
             'name' =>'required|string',
             'email' =>'required|string|unique:receivers,email',
-            'password' =>'required|string|confirmed',
+            'password' =>'required|string',
 
         ]);
+
+        if ($validator->fails()) {
+            return response()->json($validator->errors(), 422);
+        }
 
         $receiver = Receiver::create([
             'name' =>$request->name,
@@ -47,8 +49,10 @@ class ReceiverController extends Controller
             'password' => bcrypt($request->password)
         ]);
 
+        $credentials = $request->only(['email', 'password']);
+        $token = Auth::guard('receiver')->attempt($credentials);
 
-        return response()->json(['data' => $receiver], 201);
+        return response()->json(['token' => $this->createNewToken($token)], 201);
     }
 
     /**
@@ -139,7 +143,7 @@ class ReceiverController extends Controller
             'access_token' => $token,
             'token_type' => 'bearer',
             'expires_in' => auth()->factory()->getTTL() * 60,
-            'user' => auth()->user()
+            'user' => Auth::guard('receiver')->user()
         ]);
     }
 
@@ -149,7 +153,7 @@ class ReceiverController extends Controller
      * @return \Illuminate\Http\JsonResponse
      */
     public function refresh() {
-        return $this->createNewToken(auth()->refresh());
+        return $this->createNewToken(Auth::guard('receiver')->refresh());
     }
 
     /**
@@ -158,7 +162,7 @@ class ReceiverController extends Controller
      * @return \Illuminate\Http\JsonResponse
      */
     public function userProfile() {
-        return response()->json(auth()->user());
+        return response()->json(Auth::guard('receiver')->user());
     }
 
     /**
