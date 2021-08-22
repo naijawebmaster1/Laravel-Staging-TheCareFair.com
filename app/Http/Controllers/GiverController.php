@@ -37,32 +37,27 @@ class GiverController extends Controller
 
     // Register
     public function register(Request $request){
-        $fields = $request->validate([
+        $validator = Validator::make($request->all(), [
             'name' =>'required|string',
             'email' =>'required|string|unique:givers,email',
-            'phone' =>'required',
-            'birthdate' =>'required',
-            'zip_code' =>'required',
-            'password' =>'required|string|confirmed',
+            'password' =>'required|string',
 
         ]);
 
-        $user = Giver::create([
-            'name' =>$fields['name'],
-            'email' =>$fields['email'],
-            'phone' =>$fields['salary'],
-            'yearsofexperience' =>$fields['yearsofexperience'],
-            'password' => bcrypt($fields['password'])
+        if ($validator->fails()) {
+            return response()->json($validator->errors(), 422);
+        }
+
+        $giver = Giver::create([
+            'name' =>$request->name,
+            'email' => $request->email,
+            'password' => bcrypt($request->password)
         ]);
 
-            $token = $user->createToken('myapptoken')->plainTextToken;
+        $credentials = $request->only(['email', 'password']);
+        $token = Auth::guard('giver')->attempt($credentials);
 
-            $response = [
-                'user' => $user,
-                'token' => $token
-            ];
-
-            return response ($response, 201);
+        return response()->json(['token' => $this->createNewToken($token)], 201);
     }
     /**
      * Display a listing of the resource.
@@ -73,7 +68,7 @@ class GiverController extends Controller
     {
         //
 
-        return Giver::all(); 
+        return Giver::paginate(20); 
 
     }
 
@@ -139,7 +134,7 @@ class GiverController extends Controller
             'access_token' => $token,
             'token_type' => 'bearer',
             'expires_in' => auth()->factory()->getTTL() * 60,
-            'user' => auth()->user()
+            'user' => Auth::guard('receiver')->user()
         ]);
     }
 

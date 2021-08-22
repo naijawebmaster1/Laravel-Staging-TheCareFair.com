@@ -52,6 +52,7 @@ class Giver extends Authenticatable implements JWTSubject
             'vehicle_verified',
         'resume_document_url',
             'resume_verified',
+            'password',
         'profile_photo_url',
             'date_joined'
 

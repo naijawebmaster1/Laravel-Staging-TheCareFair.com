@@ -6,6 +6,7 @@ use App\Http\Controllers\GiverController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\ReceiverController;
 use App\Http\Controllers\JobController;
+use App\Http\Controllers\AgencyController;
 
 
 /*
@@ -32,7 +33,8 @@ Route::get('/unauthorized', function (Request $request) {
 Route::group(['prefix' => 'v1/giver'], function ($router) {
     Route::post('/auth/login', [GiverController::class, 'login'])->name('giver.login');
     Route::post('/auth/register', [GiverController::class, 'register'])->name('giver.register');
-    Route::post('/account/update-profile/{giver}', [GiverController::class, 'update'])->name('update');
+    Route::post('/account/update-profile/{giver}', [GiverController::class, 'update'])->name('giver.update');
+    Route::get('/account/profile', [GiverController::class, 'userProfile'])->name('giver.profile');
 
 });
 
@@ -45,6 +47,8 @@ Route::group(['prefix' => 'v1/admin'], function ($router) {
 
 Route::group(['prefix' => 'v1/receiver'], function ($router) {
     Route::post('/auth/login', [ReceiverController::class, 'login'])->name('receiver.login');
+    Route::post('/auth/register', [ReceiverController::class, 'register'])->name('receiver.register');
+    Route::get('/account/profile', [ReceiverController::class, 'userProfile'])->name('receiver.profile');
     Route::post('/jobs/create', [JobController::class, 'create'])->name('create.job');
     Route::get('/jobs/{job}/show', [JobController::class, 'show'])->name('show.job');
     Route::get('/jobs/list', [JobController::class, 'index'])->name('list.job');
